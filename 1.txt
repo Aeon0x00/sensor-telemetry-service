@@ -1,0 +1,2 @@
+docker compose up -d telemetry-postgres
+grpcurl -plaintext localhost:50054 list
