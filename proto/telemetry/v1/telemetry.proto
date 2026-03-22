@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package telemetry.v1;
+
+option go_package = "machine-telemetry-service/gen/telemetry;telemetry";
+
+service TelemetryService {
+  rpc RegisterMachine(RegisterMachineRequest) returns (RegisterMachineResponse);
+  rpc UpdateMachineLimits(UpdateMachineLimitsRequest) returns (UpdateMachineLimitsResponse);
+  rpc GetMachineState(GetMachineStateRequest) returns (GetMachineStateResponse);
+  rpc StartShiftReport(StartShiftReportRequest) returns (StartShiftReportResponse);
+  rpc ListIncidents(ListIncidentsRequest) returns (ListIncidentsResponse);
+  rpc ResolveIncident(ResolveIncidentRequest) returns (ResolveIncidentResponse);
+}
+
+message RegisterMachineRequest {
+  string code = 1;
+  string workshop = 2;
+  string eq_type = 3;
+  double max_temp_c = 4;
+  double max_vibro = 5;
+}
+
+message RegisterMachineResponse {
+  string machine_id = 1;
+}
+
+message UpdateMachineLimitsRequest {
+  string machine_id = 1;
+  double max_temp_c = 2;
+  double max_vibro = 3;
+}
+
+message UpdateMachineLimitsResponse {
+  bool updated = 1;
+}
+
+message GetMachineStateRequest {
+  string machine_id = 1;
+}
+
+message GetMachineStateResponse {
+  string machine_id = 1;
+  string code = 2;
+  string workshop = 3;
+  double last_temp_c = 4;
+  double last_vibro = 5;
+  int32 last_rpm = 6;
+  bool is_overload = 7;
+}
+
+message StartShiftReportRequest {
+  string machine_id = 1;
+}
+
+message StartShiftReportResponse {
+  string report_id = 1;
+  string status = 2;
+}
+
+message IncidentItem {
+  string id = 1;
+  string machine_id = 2;
+  double temp_c = 3;
+  double vibro = 4;
+  string reason = 5;
+}
+
+message ListIncidentsRequest {
+  string machine_id = 1;
+}
+
+message ListIncidentsResponse {
+  repeated IncidentItem incidents = 1;
+}
+
+message ResolveIncidentRequest {
+  string incident_id = 1;
+}
+
+message ResolveIncidentResponse {
+  bool resolved = 1;
+}
