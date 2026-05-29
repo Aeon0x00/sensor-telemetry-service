@@ -33,18 +33,8 @@ func NewRedisRepo (addr, password string, logger *zap.SugaredLogger) *RedisRepo 
 	}
 }
 
-// func (r *RedisRepo) GetLockOld(ctx context.Context, eventId string) (bool, error) {
-// 	val, err := r.client.Get(ctx, eventId).Result()
-// 	if err != nil {
-// 		// logger будет обрабатывать
-// 		return false, err
-// 	}
-// 	return val == "1", nil
-// }
-
 func (r *RedisRepo) AcquireEventLock(ctx context.Context, eventId string) (bool, error) {
 	key := fmt.Sprintf("telemetry:event:%s", eventId)
-	fmt.Println("redis lock:", key)
 	
 	ok, err := r.client.SetNX(ctx, key, "1", 24*time.Hour).Result()
 	if err != nil {

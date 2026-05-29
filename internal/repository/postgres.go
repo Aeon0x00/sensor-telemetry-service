@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"fmt"
 	"machine-telemetry-service/internal/domain"
 
 	"github.com/jackc/pgx/v5"
@@ -15,12 +14,6 @@ type PostgresRepo struct {
 	pool   		*pgxpool.Pool
 	logger 		*zap.SugaredLogger
 }
-
-// func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
-// 	return &PostgresRepo{
-// 		pool: pool,
-// 	}	
-// }
 
 func NewPostgresRepo (pool *pgxpool.Pool,logger *zap.SugaredLogger) *PostgresRepo {
 	return &PostgresRepo{
@@ -41,7 +34,6 @@ func NewPostgresRepo (pool *pgxpool.Pool,logger *zap.SugaredLogger) *PostgresRep
 // }
 
 func (r *PostgresRepo) CreateMachine(ctx context.Context, m domain.Machine) error {
-	fmt.Println("create machine:", m.Code)
 	sqlQuery := `
 	INSERT INTO machines (id, code, workshop, eq_type, max_temp_c, max_vibro, created_at)
 	VALUES ($1, $2, $3, $4, $5, $6, $7);
@@ -100,18 +92,7 @@ func (r *PostgresRepo) GetMachineById(ctx context.Context, machineId string) (*d
 	return &m, nil
 }
 
-
-// func (r *PostgresRepo) SaveEventOld(ctx context.Context, ev domain.TelemetryEvent) error {
-// 	_, err := r.pool.Exec(ctx, "INSERT INTO telemetry_events (event_id, machine_id, temp_c, vibro, rpm) VALUES ($1, $2, $3, $4, $5);", ev.EventId, ev.MachineId, ev.TempC, ev.Vibro, ev.Rpm)
-// 	if err != nil {
-// 		// logger будет обрабатывать
-// 		return err
-// 	}
-// 	return nil
-// }
-
 func (r *PostgresRepo) SaveTelemetryEvent(ctx context.Context, ev domain.TelemetryEvent) error {
-	fmt.Println("save event to db:", ev.EventId)
 	sqlQuery := `
 	INSERT INTO telemetry_events (event_id, machine_id, temp_c, vibro, rpm, power_kw, is_overload, created_at)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
