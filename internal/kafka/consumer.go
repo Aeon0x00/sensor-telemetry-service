@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"machine-telemetry-service/internal/domain"
 	"machine-telemetry-service/internal/usecase"
 
@@ -35,16 +34,6 @@ func NewTelemetryConsumer (brokers []string, topic, groupId string, us *usecase.
 	}
 }
 
-// func (c *TelemetryConsumer) StartReadSimple(ctx context.Context) {
-// 	for {
-// 		m, err := c.reader.ReadMessage(ctx)
-// 		if err != nil {
-// 			break
-// 		}
-// 		fmt.Println("msg:", string(m.Value))
-// 	}
-// }
-
 func (c *TelemetryConsumer) Start(ctx context.Context) error {
 	for {
 		msg, err := c.reader.FetchMessage(ctx)
@@ -55,7 +44,6 @@ func (c *TelemetryConsumer) Start(ctx context.Context) error {
 			c.logger.Errorf("kafka fetch error %v",err)
 			continue
 		}
-		fmt.Println("read offset:", msg.Offset)
 
 
 		var dto domain.KafkaTelemetryDTO
